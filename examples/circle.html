@@ -2,26 +2,21 @@
 
 <body>
     <div class="circleChart" id="0"></div>
-    <div class="circleChart" id="1" data-deg="144"></div>
+    <div class="circleChart" id="1" data-value="77"></div>
     <script src="jquery.js"></script>
     <script src="../src/circleChart.js"></script>
     <script>
         $(".circleChart#1").circleChart();
         $(".circleChart#0").circleChart({
             size: 500,
-            deg: 230,
-            startAngle: 0,
-            counterclockwise: true,
-
+            value: 55,
+            onDraw: function(el, circle) {
+              $(".circleChart_text", el).html(Math.round(circle.value)+"%");
+            }
         });
         setInterval(function() {
             $(".circleChart#0").circleChart({
-                deg: Math.random() * 360,
-                text: 0,
-                textCenter: true,
-                onDraw: function(el, circle) {
-                    $(".circleChart_text", el).html(Math.round(circle.settings.counterclockwise ? 360 - (circle.cAngle * 180 / Math.PI) : circle.cAngle * 180 / Math.PI))
-                }
+                value: Math.random() * 100
             });
         }, 4000);
     </script>
