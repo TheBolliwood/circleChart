@@ -1,114 +1,156 @@
 (function($) {
     $.fn.circleChart = function(options) {
-      var defaults = $.extend({
-                        color: "#3459eb",
-                        backgroundColor: "#e6e6e6",
-                        background: true,
-                        speed: 2000,
-                        widthRatio: 0.2,
-                        deg: 240,
-                        rad: false,
-                        counterclockwise: false,
-                        size: 110,
-                        startAngle: 0,
-                        animate: true,
-                        timeLog: false,
-                        backgroundFix: true,
-                        lineCap: "round",
-                        animation: "easeInOutCubic",
-                        text: false,
-                        redraw: false,
-                        cAngle: 0.1,
-                        textCenter: false,
-                        onDraw: function(){}
-                      }, options);
+        var defaults = {
+            color: "#3459eb",
+            backgroundColor: "#e6e6e6",
+            background: true,
+            speed: 2000,
+            widthRatio: 0.2,
+            value: 66,
+            unit: 'percent',
+            counterclockwise: false,
+            size: 110,
+            startAngle: 0,
+            animate: true,
+            backgroundFix: true,
+            lineCap: "round",
+            animation: "easeInOutCubic",
+            text: 0 + '%',
+            redraw: false,
+            cAngle: 0,
+            textCenter: true,
+            textSize: false,
+            relativeTextSize: 1 / 7,
+            autoCss: true,
+            onDraw: function(el, circle) {
+                $(".circleChart_text", el).html(Math.round(circle.value) + "%");
+            }
+        };
 
         return this.each(function() {
-                var settings = $.extend({}, defaults, $(this).data());
-                //console.log($(this).data());
-                if (!$("canvas.circleChart_canvas",this).length) {
-                  $(this).append(function() {
-                    return $('<canvas/>', {
-                            'class': 'circleChart_canvas'
-                          }).prop({
-                            width: settings.size,
-                            height: settings.size
-                      }).css({"margin-left": "auto","margin-right": "auto","display": "block"});
-                  });
-                }
-                if (!$("p.circleChart_text",this).length) {
-                  if (settings.text!==false) {
-                    $(this).append("<p class='circleChart_text'>"+settings.text+"</p>");
-                    if(settings.textCenter){
-                      $("p.circleChart_text",this).css({"position":"absolute","line-height":(settings.size+"px"),"top":0,"width":"100%","margin":0,"padding":0,"text-align":"center", "font-size":settings.size/10, "font-weight":"bold", "font-family":"sans-serif"});
-                    } else {
-                      $("p.circleChart_text",this).css({"padding-top":"5px","text-align":"center"});
+            var cache = {};
+            var _data = $(this).data();
+            for (var key in _data) {
+                if (_data.hasOwnProperty(key) && key.indexOf('_cache_') === 0) {
+                    if (defaults.hasOwnProperty(key.substring(7))) {
+                        cache[key.substring(7)] = _data[key];
                     }
-                  }
+                    $(this).removeData(key);
                 }
-                if (!settings.redraw) {
-                  settings.cAngle = settings.currentCAngle?settings.currentCAngle:settings.cAngle;
-                  settings.startAngle = settings.currentStartAngle?settings.currentStartAngle:settings.startAngle;
-                }
+            }
 
-                $(this).css("position", "relative");
-                var c = $("canvas",this).get(0);
-                var ctx = c.getContext("2d");
-                var bAngle;
-                var eAngle;
-                var cAngle;
-                if (!settings.rad) {
-                    bAngle = dToR(settings.startAngle);
-                    eAngle = dToR(settings.deg);
-                    cAngle = dToR(settings.cAngle);
-                    if (cAngle>eAngle) {
-                      cAngle = Math.abs(2*Math.PI-cAngle);
-                      eAngle = Math.abs(2*Math.PI-eAngle);
-                      bAngle = Math.abs(2*Math.PI-bAngle);
-                      settings.counterclockwise = true;
+            var settings = $.extend({}, defaults, cache, options, $(this).data());
+            for (var key in settings) {
+                $(this).data('_cache_' + key, settings[key]);
+            }
+            if (!$("canvas.circleChart_canvas", this).length) {
+                $(this).append(function() {
+                    return $('<canvas/>', {
+                        'class': 'circleChart_canvas'
+                    }).prop({
+                        width: settings.size,
+                        height: settings.size
+                    }).css(settings.autoCss ? {
+                        "margin-left": "auto",
+                        "margin-right": "auto",
+                        "display": "block"
+                    } : {});
+                });
+            }
+            if (!$("p.circleChart_text", this).length) {
+                if (settings.text !== false) {
+                    $(this).append("<p class='circleChart_text'>" + settings.text + "</p>");
+                    if (settings.autoCss) {
+                        if (settings.textCenter) {
+                            $("p.circleChart_text", this).css({
+                                "position": "absolute",
+                                "line-height": (settings.size + "px"),
+                                "top": 0,
+                                "width": "100%",
+                                "margin": 0,
+                                "padding": 0,
+                                "text-align": "center",
+                                "font-size": settings.textSize !== false ? settings.textSize : settings.size * settings.relativeTextSize,
+                                "font-weight": "bold",
+                                "font-family": "sans-serif"
+                            });
+                        } else {
+                            $("p.circleChart_text", this).css({
+                                "padding-top": "5px",
+                                "text-align": "center",
+                                "font-weight": "bold",
+                                "font-family": "sans-serif",
+                            });
+                        }
                     }
-                } else {
-                    bAngle = settings.startAngle;
-                    cAngle = settings.cAngle;
-                    if (settings.counterclockwise) {
-                      cAngle = 2*Math.PI - cAngle;
-                    }
-                    eAngle = settings.deg;
                 }
-                var pos = c.width / 2;
-                var radius = pos * (1 - settings.widthRatio / 2);
-                var lineWidth = radius * settings.widthRatio;
-                var circle = new Circle(pos, bAngle, eAngle, cAngle, radius, lineWidth, cAngle, settings);
-                $(c).parent().data("size", settings.size);
-                if (!settings.animate) {
-                    circle.cAngle = circle.eAngle;
-                    requestAnimFrame(function() {
+            }
+            if (!settings.redraw) {
+                settings.cAngle = settings.currentCAngle ? settings.currentCAngle : settings.cAngle;
+                settings.startAngle = settings.currentStartAngle ? settings.currentStartAngle : settings.startAngle;
+            }
+
+            if (settings.autoCss) {
+                $(this).css("position", "relative");
+            }
+            var c = $("canvas", this).get(0);
+            var ctx = c.getContext("2d");
+            var bAngle;
+            var eAngle;
+            var cAngle;
+
+            switch (settings.unit) {
+                case 'rad':
+                    bAngle = settings.startAngle;
+                    eAngle = settings.value;
+                    cAngle = settings.cAngle;
+                    break;
+                case 'percent':
+                    bAngle = pToR(settings.startAngle);
+                    eAngle = pToR(settings.value);
+                    cAngle = pToR(settings.cAngle);
+                    break;
+                case 'deg':
+                default:
+                    bAngle = dToR(settings.startAngle);
+                    eAngle = dToR(settings.value);
+                    cAngle = dToR(settings.cAngle);
+            }
+
+            var pos = c.width / 2;
+            var radius = pos * (1 - settings.widthRatio / 2);
+            var lineWidth = radius * settings.widthRatio;
+            var circle = new Circle(pos, bAngle, eAngle, cAngle, radius, lineWidth, cAngle, settings);
+            $(c).parent().data("size", settings.size);
+            if (!settings.animate) {
+                circle.cAngle = circle.eAngle;
+                requestAnimFrame(function() {
                     if (settings.background) {
                         drawBackground(circle, ctx);
                     }
-                    if(settings.deg!==0){
-                      drawCircle(circle, ctx);
-                      circle.settings.onDraw($(c).parent(), circle);
+                    if (settings.value !== 0) {
+                        drawCircle(circle, ctx);
+                        onDraw($(c).parent(), circle);
                     } else {
-                      ctx.clearRect(0, 0, c.width, c.height);
-                      if (circle.settings.background) {
-                          drawBackground(circle, ctx);
-                      }
+                        ctx.clearRect(0, 0, c.width, c.height);
+                        if (circle.settings.background) {
+                            drawBackground(circle, ctx);
+                        }
                     }
-                  });
+                });
+            } else {
+                if (settings.value !== 0) {
+                    animate(circle, c, ctx, new Date().getTime(), new Date().getTime(), cAngle > eAngle);
                 } else {
-                    if (settings.deg!==0) {
-                      animate(circle, c, ctx, new Date().getTime(), new Date().getTime());
-                    } else {
-                      requestAnimFrame(function() {
-                      ctx.clearRect(0, 0, c.width, c.height);
-                      if (circle.settings.background) {
-                          drawBackground(circle, ctx);
-                      }
+                    requestAnimFrame(function() {
+                        ctx.clearRect(0, 0, c.width, c.height);
+                        if (circle.settings.background) {
+                            drawBackground(circle, ctx);
+                        }
                     });
-                    }
                 }
-            });
+            }
+        });
     };
 
     function drawBackground(circle, ctx) {
@@ -122,10 +164,10 @@
     function drawCircle(circle, ctx) {
         ctx.beginPath();
         if (circle.settings.counterclockwise) {
-          k = 2*Math.PI;
-          ctx.arc(circle.pos, circle.pos, circle.radius, k-(circle.bAngle+circle.cAngle), k-circle.bAngle, circle.settings.counterclockwise);
+            var k = 2 * Math.PI;
+            ctx.arc(circle.pos, circle.pos, circle.radius, k - circle.bAngle, k - (circle.bAngle + circle.cAngle), circle.settings.counterclockwise);
         } else {
-          ctx.arc(circle.pos, circle.pos, circle.radius, circle.bAngle, circle.bAngle+circle.cAngle, circle.settings.counterclockwise);
+            ctx.arc(circle.pos, circle.pos, circle.radius, circle.bAngle, circle.bAngle + circle.cAngle, circle.settings.counterclockwise);
         }
         ctx.lineWidth = circle.lineWidth;
         ctx.lineCap = circle.settings.lineCap;
@@ -133,52 +175,50 @@
         ctx.stroke();
     }
 
-    function animate(circle, c, ctx, time, startTime) {
-        var mspf = new Date().getTime() - time;
+    function animate(circle, c, ctx, time, startTime, move /*move counterclockwise*/ ) {
+        var mspf = new Date().getTime() - time; //milliseconds per frame
         if (mspf < 1) {
             mspf = 1;
         }
-        var timeOver = time-startTime>circle.settings.speed*10;
-        if (!timeOver && (circle.cAngle)*1000 < Math.floor((circle.eAngle)*1000)) {
-            circle.cAngle = Math[circle.settings.animation]((time - startTime) / mspf, circle.sAngle, circle.eAngle-circle.sAngle, circle.settings.speed / mspf);
-        } else {
-            if (circle.settings.timeLog) {
-                console.log((new Date().getTime()) - startTime + "ms");
+        if ((time - startTime < circle.settings.speed * 1.05) /* time not over */ && (!move && (circle.cAngle) * 1000 <= Math.floor((circle.eAngle) * 1000) /* move clockwise */ || move && (circle.cAngle) * 1000 >= Math.floor((circle.eAngle) * 1000) /* move counterclockwise */ )) {
+            circle.cAngle = Math[circle.settings.animation]((time - startTime) / mspf, circle.sAngle, circle.eAngle - circle.sAngle, circle.settings.speed / mspf);
+            ctx.clearRect(0, 0, c.width, c.height);
+            if (circle.settings.background) {
+                drawBackground(circle, ctx);
             }
+            drawCircle(circle, ctx);
+            onDraw($(c).parent(), circle);
+            setCurrentAnglesData($(c).parent(), circle);
+            time = new Date().getTime();
+            requestAnimFrame(function() {
+                animate(circle, c, ctx, time, startTime, move);
+            });
+        } else {
             circle.cAngle = circle.eAngle;
             ctx.clearRect(0, 0, c.width, c.height);
             if (circle.settings.background) {
                 drawBackground(circle, ctx);
             }
             drawCircle(circle, ctx);
-            if(circle.settings.counterclockwise){
-              $(c).parent().data("current-c-angle", 360-rToD(circle.cAngle));
-              $(c).parent().data("current-start-angle", 360-rToD(circle.bAngle));
-            } else {
-              $(c).parent().data("current-c-angle", rToD(circle.cAngle));
-              $(c).parent().data("current-start-angle", rToD(circle.bAngle));
+            setCurrentAnglesData($(c).parent(), circle);
+        }
+    }
+
+    function onDraw(el, circle) {
+        if (circle.settings.onDraw !== false) {
+            switch (circle.settings.unit) {
+                case 'rad':
+                    circle.value = circle.cAngle;
+                    break;
+                case 'percent':
+                    circle.value = rToP(circle.cAngle);
+                    break;
+                case 'deg':
+                default:
+                    circle.value = rToD(circle.cAngle);
             }
-
-            return;
+            circle.settings.onDraw(el, circle);
         }
-        ctx.clearRect(0, 0, c.width, c.height);
-        if (circle.settings.background) {
-            drawBackground(circle, ctx);
-        }
-        drawCircle(circle, ctx);
-        circle.settings.onDraw($(c).parent(), circle);
-
-        if(circle.settings.counterclockwise){
-          $(c).parent().data("current-c-angle", 360-rToD(circle.cAngle));
-          $(c).parent().data("current-start-angle", 360-rToD(circle.bAngle));
-        } else {
-          $(c).parent().data("current-c-angle", rToD(circle.cAngle));
-          $(c).parent().data("current-start-angle", rToD(circle.bAngle));
-        }
-        time = new Date().getTime();
-        requestAnimFrame(function() {
-            animate(circle, c, ctx, time, startTime);
-        });
     }
 
     function Circle(pos, bAngle, eAngle, cAngle, radius, lineWidth, sAngle, settings) {
@@ -198,6 +238,34 @@
 
     function dToR(deg) {
         return (deg / 180) * Math.PI;
+    }
+
+    function pToR(percent) {
+        return percent * Math.PI / 50;
+    }
+
+    function rToP(rad) {
+        return rad * 50 / Math.PI;
+    }
+
+    function setCurrentAnglesData(el, circle) {
+        var cAngle = circle.cAngle;
+        var bAngle = circle.bAngle;
+
+        switch (circle.settings.unit) {
+            case 'rad':
+                el.data("current-c-angle", circle.cAngle);
+                el.data("current-start-angle", circle.bAngle);
+                break;
+            case 'percent':
+                el.data("current-c-angle", rToP(circle.cAngle));
+                el.data("current-start-angle", rToP(circle.bAngle));
+                break;
+            case 'deg':
+            default:
+                el.data("current-c-angle", rToD(circle.cAngle));
+                el.data("current-start-angle", rToD(circle.bAngle));
+        }
     }
 
     window.requestAnimFrame = (function(callback) {
@@ -307,16 +375,16 @@
         t -= 2;
         return c / 2 * (t * t * t + 2) + b;
     };
-    Math.easeOutCirc = function (t, b, c, d) {
-	    t /= d;
-	    t--;
-	    return c * Math.sqrt(1 - t*t) + b;
+    Math.easeOutCirc = function(t, b, c, d) {
+        t /= d;
+        t--;
+        return c * Math.sqrt(1 - t * t) + b;
     };
-    Math.easeInOutCirc = function (t, b, c, d) {
-	    t /= d/2;
-	    if (t < 1) return -c/2 * (Math.sqrt(1 - t*t) - 1) + b;
-	    t -= 2;
-	    return c/2 * (Math.sqrt(1 - t*t) + 1) + b;
+    Math.easeInOutCirc = function(t, b, c, d) {
+        t /= d / 2;
+        if (t < 1) return -c / 2 * (Math.sqrt(1 - t * t) - 1) + b;
+        t -= 2;
+        return c / 2 * (Math.sqrt(1 - t * t) + 1) + b;
     };
 
 }(jQuery));
