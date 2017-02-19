@@ -15,16 +15,14 @@
             backgroundFix: true,
             lineCap: "round",
             animation: "easeInOutCubic",
-            text: 0 + '%',
+            text: false,
             redraw: false,
             cAngle: 0,
             textCenter: true,
             textSize: false,
             relativeTextSize: 1 / 7,
             autoCss: true,
-            onDraw: function(el, circle) {
-                $(".circleChart_text", el).html(Math.round(circle.value) + "%");
-            }
+            onDraw: false
         };
 
         return this.each(function() {
