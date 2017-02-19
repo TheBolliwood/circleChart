@@ -20,6 +20,8 @@
             cAngle: 0,
             textCenter: true,
             textSize: false,
+            textWeight: 'normal',
+            textFamily: 'sans-serif',
             relativeTextSize: 1 / 7,
             autoCss: true,
             onDraw: false
@@ -69,15 +71,16 @@
                                 "padding": 0,
                                 "text-align": "center",
                                 "font-size": settings.textSize !== false ? settings.textSize : settings.size * settings.relativeTextSize,
-                                "font-weight": "bold",
-                                "font-family": "sans-serif"
+                                "font-weight": settings.textWeight,
+                                "font-family": settings.textFamily
                             });
                         } else {
                             $("p.circleChart_text", this).css({
                                 "padding-top": "5px",
                                 "text-align": "center",
-                                "font-weight": "bold",
-                                "font-family": "sans-serif",
+                                "font-weight": settings.textWeight,
+                                "font-family": settings.textFamily,
+                                "font-size": settings.textSize !== false ? settings.textSize : settings.size * settings.relativeTextSize,
                             });
                         }
                     }
