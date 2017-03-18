@@ -1,9 +1,9 @@
 # circleChart
 
-##a nice and easy to use jQuery plugin for drawing circular charts
+## a nice and easy to use jQuery plugin for drawing circular charts
 (full german documentation on [my website](http://bolli.tech/docs.php?p=circleChart))
 
-##default settings
+## default settings
 ```javascript
 color: "#3459eb",
 backgroundColor: "#e6e6e6",
@@ -31,7 +31,7 @@ autoCss: true,
 onDraw: false
 ```
 
-##examples
+## examples
 ```javascript
 $(".circleChart").circleChart({
       value: 68,
