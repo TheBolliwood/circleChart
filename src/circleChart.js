@@ -159,7 +159,7 @@
             'default': rToD
           };
 
-          copy.value = (units[settings.unit] || units['default'])(copy.cAngle);
+          copy.value = (units[this.settings.unit] || units['default'])(copy.cAngle);
 
           copy.text = (text)=>setCircleText(el, text);
           copy.settings.onDraw(el, copy);
@@ -221,10 +221,10 @@
           'default': rToD
         };
 
-        let f = (units[settings.unit] || units['default']);
+        let f = (units[this.settings.unit] || units['default']);
 
-        el.data("current-c-angle", f(settings.cAngle));
-        el.data("current-start-angle", f(settings.bAngle));  
+        el.data("current-c-angle", f(this.cAngle));
+        el.data("current-start-angle", f(this.bAngle));
       }
     };
 
@@ -255,7 +255,8 @@
         }
       }
 
-      let settings = Object.assign({}, defaults, cache, options, _data);
+      let settings = Object.assign({}, defaults, cache, _data, options);
+      console.log(settings);
       for (let key in settings) {
         if(key.indexOf('_cache_') !== 0)
           el.data('_cache_' + key, settings[key]);
