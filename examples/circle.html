@@ -1,5 +1,4 @@
 <html>
-
 <body>
     <div class="circleChart" id="0"></div>
     <div class="circleChart" id="1" data-value="77"></div>
@@ -9,17 +8,17 @@
         $(".circleChart#1").circleChart();
         $(".circleChart#0").circleChart({
             size: 500,
-            value: 55,
+            value: 50,
+            text: 0,
             onDraw: function(el, circle) {
-              $(".circleChart_text", el).html(Math.round(circle.value)+"%");
+                circle.text(Math.round(circle.value) + "%");
             }
         });
         setInterval(function() {
-            $(".circleChart#0").circleChart({
+            $("#0").circleChart({
                 value: Math.random() * 100
             });
         }, 4000);
     </script>
 </body>
-
 </html>
