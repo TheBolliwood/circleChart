@@ -1,0 +1,31 @@
+{
+  "name": "jquery-circlechart",
+  "version": "2.0.0",
+  "description": "This small jQuery plugin is for creating circular charts. (full documentation on my website ([english](http://bolli.tech/docs.php?p=circleChart)) ([german](http://bolli.tech/docs.php?p=circleChart_de)))",
+  "main": "src/circleChart.js",
+  "directories": {
+    "example": "examples"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TheBolliwood/circleChart.git"
+  },
+  "peerDependencies": {
+    "jquery": "x"
+  },
+  "keywords": [],
+  "author": {
+    "name": "Bolli",
+    "url": "http://bolli.tech",
+    "email": "bolli@bolli.tech"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/TheBolliwood/circleChart/issues",
+    "email": "bugs@bolli.tech"
+  },
+  "homepage": "https://github.com/TheBolliwood/circleChart#readme"
+}
