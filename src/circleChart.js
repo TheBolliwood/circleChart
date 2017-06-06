@@ -161,7 +161,7 @@
 
           copy.value = (units[this.settings.unit] || units['default'])(copy.cAngle);
 
-          copy.text = (text)=>setCircleText(el, text);
+          copy.text = (text) => setCircleText(el, text);
           copy.settings.onDraw(el, copy);
         }
       },
@@ -228,10 +228,28 @@
       }
     };
 
-
     let setCircleText = (el, text) => {
-        el.data("text", text);
-        $(".circleChart_text", el).html(text);
+      el.data("text", text);
+      $(".circleChart_text", el).html(text);
+    }
+
+    let scaleCanvas = (c) => {
+      var ctx = c.getContext("2d");
+      var dpr = window.devicePixelRatio || 1;
+      var bsr = ctx.webkitBackingStorePixelRatio || ctx.mozBackingStorePixelRatio || ctx.msBackingStorePixelRatio || ctx.oBackingStorePixelRatio || ctx.backingStorePixelRatio || 1;
+
+      var ratio = dpr / bsr;
+
+      var oldWidth = c.width;
+      var oldHeight = c.height;
+
+      c.width = oldWidth * ratio;
+      c.height = oldHeight * ratio;
+
+      c.style.width = oldWidth + 'px';
+      c.style.height = oldHeight + 'px';
+
+      ctx.scale(ratio, ratio);
     }
 
     let rToD = (rad) => rad / Math.PI * 180;
@@ -256,21 +274,21 @@
       }
 
       let settings = Object.assign({}, defaults, cache, _data, options);
-      console.log(settings);
       for (let key in settings) {
-        if(key.indexOf('_cache_') !== 0)
+        if (key.indexOf('_cache_') !== 0)
           el.data('_cache_' + key, settings[key]);
-      }
+        }
       if (!$("canvas.circleChart_canvas", el).length) {
         el.append(function() {
-          return $('<canvas/>', {'class': 'circleChart_canvas'})
-          .prop({width: settings.size, height: settings.size})
-          .css(settings.autoCss ? {
+          return $('<canvas/>', {'class': 'circleChart_canvas'}).prop({width: settings.size, height: settings.size}).css(settings.autoCss
+            ? {
               "margin-left": "auto",
               "margin-right": "auto",
               "display": "block"
-            } : {});
+            }
+            : {});
         });
+        scaleCanvas($("canvas", el).get(0));
       }
       if (!$("p.circleChart_text", el).length) {
         if (settings.text !== false) {
