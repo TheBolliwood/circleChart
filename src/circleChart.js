@@ -366,13 +366,13 @@
           }
           if (settings.value !== 0) {
             circle.draw(ctx);
-            circle.onDraw(el);
             circle.setCurrentAnglesData(el);
           } else {
             if (circle.settings.background) {
               circle.drawBackground(ctx);
             }
           }
+          circle.onDraw(el);
         });
       } else {
         if (settings.value !== 0) {
@@ -383,6 +383,7 @@
             if (circle.settings.background) {
               circle.drawBackground(ctx);
             }
+            circle.onDraw(el);
           });
         }
       }
