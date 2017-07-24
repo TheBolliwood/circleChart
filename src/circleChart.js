@@ -360,6 +360,7 @@
       if (!settings.animate) {
         circle.cAngle = circle.eAngle;
         rAF(() => {
+          ctx.clearRect(0, 0, settings.size, settings.size);
           if (settings.background) {
             circle.drawBackground(ctx);
           }
@@ -368,7 +369,6 @@
             circle.onDraw(el);
             circle.setCurrentAnglesData(el);
           } else {
-            ctx.clearRect(0, 0, settings.size, settings.size);
             if (circle.settings.background) {
               circle.drawBackground(ctx);
             }
