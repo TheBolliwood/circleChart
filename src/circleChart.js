@@ -368,7 +368,7 @@
             circle.onDraw(el);
             circle.setCurrentAnglesData(el);
           } else {
-            ctx.clearRect(0, 0, this.settings.size, this.settings.size);
+            ctx.clearRect(0, 0, settings.size, settings.size);
             if (circle.settings.background) {
               circle.drawBackground(ctx);
             }
@@ -379,7 +379,7 @@
           circle.animate(el, ctx, new Date().getTime(), new Date().getTime(), cAngle > eAngle);
         } else {
           rAF(() => {
-            ctx.clearRect(0, 0, this.settings.size, this.settings.size);
+            ctx.clearRect(0, 0, settings.size, settings.size);
             if (circle.settings.background) {
               circle.drawBackground(ctx);
             }
