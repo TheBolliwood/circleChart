@@ -28,106 +28,107 @@
       onDraw: false
     };
 
-    //Math functions
+    // Animation Math functions
+    let math = {};
 
-    Math.linearTween = (t, b, c, d) => c * t / d + b;
-    Math.easeInQuad = (t, b, c, d) => {
+    math.linearTween = (t, b, c, d) => c * t / d + b;
+    math.easeInQuad = (t, b, c, d) => {
       t /= d;
       return c * t * t + b;
     };
-    Math.easeOutQuad = (t, b, c, d) => {
+    math.easeOutQuad = (t, b, c, d) => {
       t /= d;
       return -c * t * (t - 2) + b;
     };
-    Math.easeInOutQuad = (t, b, c, d) => {
+    math.easeInOutQuad = (t, b, c, d) => {
       t /= d / 2;
       if (t < 1)
         return c / 2 * t * t + b;
       t--;
       return -c / 2 * (t * (t - 2) - 1) + b;
     };
-    Math.easeInCubic = (t, b, c, d) => {
+    math.easeInCubic = (t, b, c, d) => {
       t /= d;
       return c * t * t * t + b;
     };
-    Math.easeOutCubic = (t, b, c, d) => {
+    math.easeOutCubic = (t, b, c, d) => {
       t /= d;
       t--;
       return c * (t * t * t + 1) + b;
     };
-    Math.easeInOutCubic = (t, b, c, d) => {
+    math.easeInOutCubic = (t, b, c, d) => {
       t /= d / 2;
       if (t < 1)
         return c / 2 * t * t * t + b;
       t -= 2;
       return c / 2 * (t * t * t + 2) + b;
     };
-    Math.easeInQuart = (t, b, c, d) => {
+    math.easeInQuart = (t, b, c, d) => {
       t /= d;
       return c * t * t * t * t + b;
     };
-    Math.easeOutQuart = (t, b, c, d) => {
+    math.easeOutQuart = (t, b, c, d) => {
       t /= d;
       t--;
       return -c * (t * t * t * t - 1) + b;
     };
-    Math.easeInOutQuart = (t, b, c, d) => {
+    math.easeInOutQuart = (t, b, c, d) => {
       t /= d / 2;
       if (t < 1)
         return c / 2 * t * t * t * t + b;
       t -= 2;
       return -c / 2 * (t * t * t * t - 2) + b;
     };
-    Math.easeInQuint = (t, b, c, d) => {
+    math.easeInQuint = (t, b, c, d) => {
       t /= d;
       return c * t * t * t * t * t + b;
     };
-    Math.easeOutQuint = (t, b, c, d) => {
+    math.easeOutQuint = (t, b, c, d) => {
       t /= d;
       t--;
       return c * (t * t * t * t * t + 1) + b;
     };
-    Math.easeInOutQuint = (t, b, c, d) => {
+    math.easeInOutQuint = (t, b, c, d) => {
       t /= d / 2;
       if (t < 1)
         return c / 2 * t * t * t * t * t + b;
       t -= 2;
       return c / 2 * (t * t * t * t * t + 2) + b;
     };
-    Math.easeInSine = (t, b, c, d) => -c * Math.cos(t / d * (Math.PI / 2)) + c + b;
-    Math.easeOutSine = (t, b, c, d) => c * Math.sin(t / d * (Math.PI / 2)) + b;
-    Math.easeInOutSine = (t, b, c, d) => -c / 2 * (Math.cos(Math.PI * t / d) - 1) + b;
-    Math.easeInExpo = (t, b, c, d) => c * Math.pow(2, 10 * (t / d - 1)) + b;
-    Math.easeOutExpo = (t, b, c, d) => c * (-Math.pow(2, -10 * t / d) + 1) + b;
-    Math.easeInOutExpo = (t, b, c, d) => {
+    math.easeInSine = (t, b, c, d) => -c * Math.cos(t / d * (Math.PI / 2)) + c + b;
+    math.easeOutSine = (t, b, c, d) => c * Math.sin(t / d * (Math.PI / 2)) + b;
+    math.easeInOutSine = (t, b, c, d) => -c / 2 * (Math.cos(Math.PI * t / d) - 1) + b;
+    math.easeInExpo = (t, b, c, d) => c * Math.pow(2, 10 * (t / d - 1)) + b;
+    math.easeOutExpo = (t, b, c, d) => c * (-Math.pow(2, -10 * t / d) + 1) + b;
+    math.easeInOutExpo = (t, b, c, d) => {
       t /= d / 2;
       if (t < 1)
         return c / 2 * Math.pow(2, 10 * (t - 1)) + b;
       t--;
       return c / 2 * (-Math.pow(2, -10 * t) + 2) + b;
     };
-    Math.easeInCirc = (t, b, c, d) => {
+    math.easeInCirc = (t, b, c, d) => {
       t /= d;
       return -c * (Math.sqrt(1 - t * t) - 1) + b;
     };
-    Math.easeOutCubic = (t, b, c, d) => {
+    math.easeOutCubic = (t, b, c, d) => {
       t /= d;
       t--;
       return c * (t * t * t + 1) + b;
     };
-    Math.easeInOutCubic = (t, b, c, d) => {
+    math.easeInOutCubic = (t, b, c, d) => {
       t /= d / 2;
       if (t < 1)
         return c / 2 * t * t * t + b;
       t -= 2;
       return c / 2 * (t * t * t + 2) + b;
     };
-    Math.easeOutCirc = (t, b, c, d) => {
+    math.easeOutCirc = (t, b, c, d) => {
       t /= d;
       t--;
       return c * Math.sqrt(1 - t * t) + b;
     };
-    Math.easeInOutCirc = (t, b, c, d) => {
+    math.easeInOutCirc = (t, b, c, d) => {
       t /= d / 2;
       if (t < 1)
         return -c / 2 * (Math.sqrt(1 - t * t) - 1) + b;
@@ -195,7 +196,7 @@
           mspf = 1;
         }
         if ((time - startTime < this.settings.speed * 1.05)/* time not over */ && (!move && (this.cAngle) * 1000 <= Math.floor((this.eAngle) * 1000)/* move clockwise */ || move && (this.cAngle) * 1000 >= Math.floor((this.eAngle) * 1000)/* move counterclockwise */)) {
-          this.cAngle = Math[this.settings.animation]((time - startTime) / mspf, this.sAngle, this.eAngle - this.sAngle, this.settings.speed / mspf);
+          this.cAngle = math[this.settings.animation]((time - startTime) / mspf, this.sAngle, this.eAngle - this.sAngle, this.settings.speed / mspf);
           ctx.clearRect(0, 0, this.settings.size, this.settings.size);
           if (this.settings.background) {
             this.drawBackground(ctx);
