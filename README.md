@@ -1,7 +1,7 @@
 # circleChart
 
 ## a nice and easy to use jQuery plugin for drawing circular charts
-(full documentation on my website ([english](http://bolli.tech/docs.php?p=circleChart)) ([german](http://bolli.tech/docs.php?p=circleChart_de)))
+(full documentation on my website ([english](http://bolli.tech/circleChart)) ([german](http://bolli.tech/circleChart/de.html)))
 
 ## default settings
 ```javascript
